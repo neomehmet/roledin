@@ -1,0 +1,96 @@
+source ayirici -> giriş ayricisi , path, length into node_2_node_path_length_df
+giriş ayiricisindan giriş hücresine eriş ( hucre_id ) # şunu kullanarak giris_hucresi = ayirici_2_hucre_dict(giriş ayricisi id )
+merkez = hucre_2_merkez_dict( giris_hucresi )
+top_ayiricilar = hucre_2_ayirici_top( giris_hucresi )
+
+for ayirici_1 in top_ayiricilar:
+	1.)top ayirici aldık, ayirici_1 ( giriş hücresi üst ayiricisi) = for ayirici_1 in 
+	2.)merkez = get ayirici_2_merkez_dict( ayirici_1 )
+	3.)bara_no_1 = get ayirici_2_bara_no( ayirici_1 )
+	4.)hücre_1 = get ayirici_2_hucre_dict( ayirici_1 )
+	5.)fonksiyon1 call : cikis_hucreleri = fonksiyon1
+	for i in cikis_hucreleri:
+		#hücreden hücreye kısmı # senaryo 1
+		6.) fonksiyon2 call : bara_no_2, ayirici_2 = fonksiyon2 # çikiş hücresindeki ayirici_1 ile aynı barada olan ayiriciyi bulma
+		if bara_no_2 is not none 
+			7.) path = networkx shortest path( from ayirici_1, ayirici_2) # eğer bara_no_2 == ve bara_no_1 ise bu satır çalışsın eğer yoksa hatayı ekrana yaz
+			8.) add ayirici_1, ayirici_2, path, uzunluk=0 into node_2_node_path_length_df ( sütunlar : top, sub, path, length)
+		
+		#hücreden bağlama hücresine oradan da cikisa # senaryo 2 
+		9.) fonksiyon3: baglama_hucreler _= merkezdeki baglama hücrelerini bulma ( 1 hücrede olabilri 1den fazlada olabilir)
+		10.) for baglama_hucresi_id in baglama_hucreler:
+				11.) baglama_bara_2, baglama_ayirici_2 = get_bara_and_ayirici( bara_no_1, baglama_hucresi_id )
+					if baglama_bara_2 is not none
+						12.) other_baglama_ayiricilar =  hucre_2_ayiricilar_abb_id_dict(baglama_hucresi_id)
+						13.) for baglama_ayirici_3 in other_baglama_ayiricilar :
+								if baglama_ayirici_3 == baglama_ayirici_2: #eger ciki
+									continue
+								
+								14. baglama_bara_3 = ayirici_2_bara_no( baglama_ayirici_3) 
+								15. ayirici_4 = fonksiyon4(baglama_bara_3, i) #i: cikis hücresi
+								16. add ayirici_1, baglama_ayirici_2 path=0 length=0 node_2_node_path_length_df
+								17. add baglama_ayirici_2 baglama_ayirici_3 path=0 length=0 node_2_node_path_length_df
+								18. add baglama_ayirici_3, ayirici_4, path=0 length=0 node_2_node_path_length_df
+		
+					
+		
+
+
+fonksiyon1 get_exit_bay_list(ayirici_1, merkez, bay_1) 
+	işlevi :
+		adım 0) cikis_hucreleri = list()
+		adım 1) bays = merkez_2_hucre_dict(merkez)
+		adım 2) bays listesi içinden bay_1 silinecek
+		adım 3) bays içindeki idler gezilere hucre_2_cikis_hucreleri dict objesinden bakılarak value 0 ise bunlarda bays listesinden silinecek	
+				for i in bays;
+					val = cikis_hucreleri(i)
+					if val == 0
+						bays içinden i silinecek
+					else
+						cikis_hucreleri.append(i)
+		adım 4) return cikis_hucreleri
+
+
+fonksiyon2: get_bara_and_ayirici(bara_no_1, hücre_id)
+	işlevi:
+		adım 1) top_ayirici = get from there hucre_2_ayirici_top(hücre_id) #( bu bir liste olabilir)
+		adım 2) ayirici_ = None
+		adım 3) bara_no_ = None
+		adım 4) if top_ayirici is list
+		adım 5)	 for j in top_ayirici
+		adım 6)		temp_bara_no = ayirici_2_bara_no( j ) #temp_bara_no liste olabilir
+		adım 7)		if temp_bara_no == bara_no_1:
+		adım 8)			ayirici_ = j
+		adım 9)			bara_no_ = temp_bara_no
+		adım 11)		return bara_no_, ayirici_
+		adım 12)else
+			      ayirici_ = top_ayirici
+			      bara_no_ = ayirici__bara_no( top_ayirici )
+				  return bara_no_, ayirici_
+
+fonksiyon3: get_baglama_bays(merkez):
+	işlevi:
+		adım 0) bays = list()
+		adım 1) temp_bays = merkez_2_hucre_dict(merkez)
+		adım 2) for bay_id in temp_bays
+					val = hucre_2_coupling_bays( bay_id )
+					if val == 1
+						bays.append(i)
+				return bays
+
+fonksiyon4: get_cikis_baglama_ayirici( bara_no, cikis_hucre)
+	işlevi
+		adım 0) ayirici_ = none
+		adım 1) ayiriciar = hucre_2_ayirici_top(cikis_hucre)
+		adım 2) for j in ayiricilar:
+					temp_bara_no = ayirici_2_bara_no( j )
+					if temp_bara_no == bara_no
+						return j #ayirici
+						
+
+
+senaryo 1 girişten direk çikiş hücresine aynı baradaki 2 ayrici trace ediliyor.
+senaryo 2 girişten bağlama sonra bağlamadan çikiş hücresi ayırıcısına trace ediliyor şöyle
+		giriş hücresindeki ayiricinın aynı baradaki bağlama hücresindeki ayiriciya sonra bağlamadaki bu ayiricidan bağlama hücresindeki diğer ayırıcılara ve bu diğer ayırıcılarda kendi baralarının çikiş hücresindeki o baralardkai ayiricilara trace etmeye çalıştım
+		
+

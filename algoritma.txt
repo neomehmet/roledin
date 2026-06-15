@@ -1,0 +1,34 @@
+ALGORİTMA trace sonucu ilk gelen ayirici alt merkez bilgisi ve bu alt merkez 2.5 bara ise
+
+0. source ayirici -> giriş ayricisi , path, uzunluk şeklinde bir dataframe(node, child şeklinde) bu bilgileri satır olarak ekle # bu dataframe adı static_trace_node2node olsun
+1. giriş ayiricisi_id ile bu ayricinin bulunduğu hücre bilgisine eriş -> Variable1
+2. giriş hücresideki diğer ayirici(veya ayiricilar) bilgisine eriş ve giriş ayiricisini bunların arasından çıkart ve bir liste olarak tut-> List_variable1
+   bilgi 2. adımda eğer hücrenin giriş ayiricisindan başka ayiricisi yoksa(yani List variable1 boş ise, giriş ayiricisinı referans alarak 4. adımdan sonraki for döngüsüne başlanmalı yani sadece giriş ayiricisi kullanılarak merkezdeki diğer hücrelern ayiricilarına erişilecek)
+3. giriş hücresi bilgisinden aynı merkezdeki diğer hücre bilgilerine eriş ve liste olarak tut-> List_variable2
+4. merkez içindeki bağlantı hücrelerini bul ve liste değişkeni olarak kayıt et -> List_variable3
+	bilgi 4. adımı yapmak için hücrenin shape file bilgilerinden ne kullanmalıyız
+5. List_variable2 içinden list_variable3 içinde olanları çıkart, yani list_variable2 listesinde sadece çıkış hücreleri olacak, bağlantı ve giriş hücresi olmayacak
+
+6.	for i in List variable1: #( giriş hücresindeki ayırıcı listesi, eğer liste boş ise giriş ariyirici kullanmalıyız
+7.  	i(giriş hücresinin bir ayiricisi) id bilgisi ile onun bağlı olduğu bara ismi variable2 olarka kayıt et #ayirici_2_bara_no dict içinden buna erişebiliriz
+
+8.		for j in list_variable2: #burada giriş ve bağlantı hücrelerini değil, çıkış hücrelerini sırayla erişeceğiz
+9.			j hücresinin(bir çıkış hücresi) içindeki ayiriciların(hucre_2_ayirici_top içinden bakılacak j id bilgisi ) 
+			hangisinin ayiricisi variable2 ile aynı ise o ayiriciyi bul ve tut variable3 #
+10.			temp_path = single shortest path ( from i, to variable3) # burada bir tane path olmalı çünkü bir merkez içinde 2 farklı hücre içinde ama aynı barada olan ayircilar için en kısa yol 1 adettir
+11.         static_trace_node2node dataframe yeni iki satır eklenecek
+			ilk satır : i(ayirici id), variable3(diğer ayirici id), path, uzunluk(uzunluk 0 ) olacak
+			ikinci satır variable3, j hücresinin bottom ayiricisi(hucre_2_ayirici_bottom), path(boş), uzunluk(değeri 0) olacak 
+			ve queue'ye j hücresinin bottom ayiricisi eklenecek,
+			
+12. 	burada bir fonksiyon silsilesi olacak	
+		2.5 bara olduğu için kublaj-bağlama hücresi üzerinden de kontrol edilmeli
+		i ayiricisindan bağlantı hücresine ve oradan da j hücresinin
+		
+		
+		hata tek bara 2.5 bara oluşturan couplateV2.py daki kod yanlış oldu çünkü 2.5 bara olmayıp alt alta çizilmiş ayrı hücre blokları olan merkezler
+		var 145691,146005
+		bağlantıdan sonra olan kısımlarda bara no değişyior bunu şöyle aşmalıyız bara_no 1a 2a 3a 1b 2b olabiliyor 
+		tek bara sistemlerde 1a 1b gibi oluyor, şu anki kod 1a 1b yide 2.5 para merkez kabul etmiş hatalı oluyor.
+		bunu aşmak için BARA_NO değişkeninin sadece ilk digit'ine bakmalıyız bunu hallettik gibi ama bazı tek bara 
+		merkezlerde gitmiş bağlantı barasının küçük bir yerine 2a fln yazmış naparız bi bakalım

@@ -1,0 +1,129 @@
+tek bara
+
+
+hucre_tek_bara_top_ayirici
+hucre_tek_bara_bottom_ayirici
+
+source
+giris_ayirici
+giris_hucre = ayirici_2_hucre_dict.get( giris_ayirici )
+giris_merkez = ayirici_2_merkez_dict.get( giris_ayirici )
+
+giris_bottom_ayirici = hucre_tek_bara_bottom_ayirici.get( giris_hucre )
+giris_top_ayirici = hucre_tek_bara_top_ayirici.get( giris_hucre )
+
+if giris_bottom_ayirici == giris_top_ayirici:
+	# tek ayiricisi var
+	
+elif ( giris_bottom_ayirici != giris_top_ayirici ) and giris_top_ayirici != None and giris_bottom_ayirici != None:
+	# iki ayiricili önce ekle sonra top ile diğer hücrelere trace
+	tablo update ( giris_bottom_ayirici, giris_top_ayirici, 0)
+	cikis_hucreleri_list = self.get_exit_bay_list(giris_merkez, giris_hucre)
+	
+	for cikis_hucresi in cikis_hucreleri_list:
+		func1 call giris_cikis_ayni_mi( cikis_hucresi ) return -> tek_mi, cikis_top_ayirici, cikis_bottom_ayirici
+		if tek_mi =="tek_ayirici".
+			tablo.append( giris_top_ayirici, cikis_top_ayirici, 0)
+			to_add_queue.append( cikis_top_ayirici )
+		elif tek_mi == "iki_ayirici":
+			tablo.append( giris_top_ayirici, cikis_top_ayirici, 0)
+			tablo.append( cikis_top_ayirici, cikis_bottom_ayirici, 0 )
+			to_add_queue.append( cikis_bottom_ayirici )
+		elif tek_mi == "hata"
+			#log or print
+		else
+			#log or print
+
+func1 giris_cikis_ayni_mi( hucre_id ) 
+		cikis_top =  hucre_tek_bara_top_ayirici.get( hucre_id )
+		cikis_bottom = hucre_tek_bara_bottom_ayirici.get( hucre_id )
+		if cikis_bottom == 	cikis_top
+			return "tek_ayirici", cikis_top, cikis_bottom
+		elif (cikis_bottom!=cikis_top) and (cikis_bottom != None) and (cikis_top != None):
+			return "iki_ayirici" cikis_top, cikis_bottom
+		return "hata", none, none
+
+path içinde baska ayırıcı var mı onu kontrol etmedik onuda kontrol etmemiz lazım
+
+func2 merkez_icinde_path_analiz(source_ayirici, target_ayirici)
+	ayirici_list = list
+	path = shortest_path( source_ayirici, target_ayirici)
+	for ayirici_coord in path:
+		if ayirici_coord in ayirici_2_ayirici_geometry_dict.keys:
+			ayirici_list.append( ayirici_coord_2_ayirici_id_dict.get( ayirici_coord )
+
+	return ( ayirici_list )
+
+
+
+func3 tablo updater olabilir
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+merkez_listesi_tek_bara = get tek_bara_merkez 
+for merkez in merkez_listesi_tek_bara :
+	hucreler = merkez_2_hucre_dict( merkez )
+	for hucre_id in hucreler:
+		ayiricilar = hucre_2_ayiricilar_abb_id_dict[hucre_id]
+		count = 0
+		for i in ayiricilar:
+			count +=1
+		if count == 0:
+			hucre_tek_bara_top_ayirici[hucre_id] = None
+			hucre_tek_bara_bottom_ayirici[hucre_id] = None
+		if count == 1:
+			hucre_tek_bara_top_ayirici[hucre_id]    = ayiricilar[0]
+			hucre_tek_bara_bottom_ayirici[hucre_id] = ayiricilar[0]
+		if count == 2:
+			baglanti_id = hucre_2_baglantilar_abb_id_dict.get(hucre_id, [])
+			baglanti_coords = baglanti_id_2_coords.get(baglanti_id)
+			baglanti_start = baglanti_coords[0]
+			baglanti_end = baglanti_coords[1]
+			# Hedef node olarak graph'ta bulunan bağlantı koordinatını seç
+			target_node = None
+			if baglanti_start in G:
+				target_node = baglanti_start
+			elif baglanti_end in G:
+				target_node = baglanti_end
+			# Her ayırıcı için bağlantı elemanına olan mesafeyi hesapla
+			baglanti_mesafeleri = dict()
+			for ayirici_id in ayiricilar:
+				ayirici_coord = ayirici_id_2_coord.get(ayirici_id)
+				if ayirici_coord is None or ayirici_coord not in G:
+					continue
+				try:
+					path = nx.shortest_path(G, source=ayirici_coord, target=target_node)
+					baglanti_mesafeleri[ayirici_id] = len(path)
+				except nx.NetworkXNoPath:
+					# Yol bulunamadıysa çok büyük bir mesafe ata
+					baglanti_mesafeleri[ayirici_id] = 999999
+				except nx.NodeNotFound:
+					continue
+
+			if len(baglanti_mesafeleri) < 2:
+				# En az 2 ayırıcı mesafesi olmalı ki sınıflandırma yapılabilsin
+				continue
+			# Mesafeye göre sırala (en yakından en uzağa)
+			sorted_ayiricilar = sorted(baglanti_mesafeleri.items(), key=lambda x: x[1])
+
+			# En yakın -> bottom, diğerleri -> top
+			hucre_tek_bara_bottom_ayirici[hucre_id] = sorted_ayiricilar[0][0]  # sadece ID
+			hucre_tek_bara_top_ayirici[hucre_id] = [
+				item[0] for item in sorted_ayiricilar[1:]
+			]  # ID listesi
+			
